@@ -27,12 +27,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/forms/create', [FormController::class, 'create'])->name('forms.create');
     Route::post('/form/store', [FormController::class, 'store'])->name('forms.store');
     Route::get('/forms/{date}', [FormController::class, 'info'])->name('forms.info');
+    Route::get('/forms/{form}/edit', [FormController::class, 'edit'])->name('forms.edit');
+    Route::put('/forms/{form}', [FormController::class, 'update'])->name('forms.update');
+    Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('forms.destroy');
     Route::get('forms/{form}/switch-status', [FormController::class, 'switchStatus'])->name('forms.switch-status');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 
 require __DIR__.'/auth.php';

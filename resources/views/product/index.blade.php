@@ -41,9 +41,6 @@
                                     <th scope="col" class="px-6 py-3">
                                         Item
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <span class="sr-only">Edit</span>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,7 +52,7 @@
                                 </tr>
                                 @else
                                     @foreach($products as $item)
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" data-modal-target="product-form-{{ $item->id }}" data-modal-toggle="product-form-{{ $item->id }}">
                                             <th scope="row" class="px-6 py-4">
                                                 <p>
                                                     Name : {{ $item->name }}
@@ -67,27 +64,38 @@
                                                     Price : RM{{ $item->price }}
                                                 </p>
                                             </th>
-                                            <td class="px-6 py-4 text-right">
-                                                <div class="flex justify-evenly">
-                                                    <!-- Edit Product -->
-                                                    <a href="{{ route('product.edit', $item->id) }}" class="font-medium text-yellow-600 dark:text-yellow-500 hover:underline">
-                                                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                        </tr>
+                                        <div id="product-form-{{ $item->id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                        <div class="relative p-4 w-full max-w-2xl max-h-full">
+                                            <!-- Modal content -->
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                <!-- Modal header -->
+                                                <div class="flex items-center justify-between p-4 md:p-5 rounded-t">
+                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                                        Select an option
+                                                    </h3>
+                                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="product-form-{{ $item->id }}">
+                                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                                         </svg>
-                                                    </a>
-                                                    <!-- Delete Product -->
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Modal footer -->
+                                                <div class="flex items-center justify-between p-4 md:p-5 rounded-b gap-2">
+                                                    <!-- Edit Form Button -->
+                                                    <a href="{{ route('product.edit', $item->id) }}" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
+                                                    <!-- Delete Form Button -->
                                                     <form action="{{ route('product.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                                                            </svg>
-                                                        </button>
-                                                    </form>                                         
+                                                        <button type="submit" class="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Delete</button>
+                                                    </form>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @endforeach
                                 @endif
                             </tbody>

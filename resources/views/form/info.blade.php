@@ -41,15 +41,12 @@
                                     <th scope="col" class="px-6 py-3">
                                         Item
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <span class="sr-only">Edit</span>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($forms as $form)
-                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <th scope="row" class="px-6 py-4 ">
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"  data-modal-target="info-form--{{ $form->id }}" data-modal-toggle="info-form--{{ $form->id }}">
+                                        <th scope="row" class="px-6 py-4">
                                             <p>
                                                 Status : {{ $form->status }}
                                             </p>
@@ -69,22 +66,38 @@
                                                 Total : RM{{ number_format($form->product->price * $form->quantity - $form->discount, 2) }}
                                             </p>
                                         </th>
-                                        <td class="px-6 py-4 text-right">
-                                            <div class="flex justify-evenly">
-                                                @if($form->status === 'loan')
-                                                <form action="{{ route('forms.switch-status', $form->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('GET')
-                                                    <button type="submit" class="font-medium text-green-600 dark:text-green-500 hover:underline">
-                                                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                                @endif
-                                            </div>
-                                        </td>
                                     </tr>
+                                    <div id="info-form--{{ $form->id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                        <div class="relative p-4 w-full max-w-2xl max-h-full">
+                                            <!-- Modal content -->
+                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                <!-- Modal header -->
+                                                <div class="flex items-center justify-between p-4 md:p-5 rounded-t">
+                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                                        Select an option
+                                                    </h3>
+                                                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="info-form--{{ $form->id }}">
+                                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Modal footer -->
+                                                <div class="flex items-center justify-between p-4 md:p-5 rounded-b gap-2">
+                                                    <!-- Edit Form Button -->
+                                                    <a href="{{ route('forms.edit', $form->id) }}" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</a>
+                                                    <!-- Delete Form Button -->
+                                                    <form action="{{ route('forms.destroy', $form->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this form?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endforeach
                             </tbody>
                         </table>
@@ -93,4 +106,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-dropdown-toggle]').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    const dropdownId = this.getAttribute('data-dropdown-toggle');
+                    const dropdownElement = document.getElementById(dropdownId);
+                    if (dropdownElement) {
+                        dropdownElement.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

@@ -69,12 +69,46 @@ class FormController extends Controller
         return redirect()->route('forms.index')->with('message', 'Form created successfully');
     }
 
-    public function switchStatus(Form $form)
+    public function edit(Form $form)
     {
-        $form->status = 'cash';
+        $products = Product::all();
+        return view('form.edit', compact('form', 'products'));
+    }
+
+    public function update(Request $request, Form $form)
+    {
+        // Validate the form data
+        $validatedData = $request->validate([
+            'date' => 'required|date',
+            'product_id' => 'required|exists:products,id',
+            'status' => 'required|in:cash,loan',
+            'quantity' => 'required|numeric|min:1',
+            'discount' => 'nullable|numeric|min:0',
+            'remark' => 'nullable|string|max:255',
+        ]);
+
+        // Update the form entry
+        $form->date = $validatedData['date'];
+        $form->product_id = $validatedData['product_id'];
+        $form->status = $validatedData['status'];
+        $form->quantity = $validatedData['quantity'];
+        $form->discount = $validatedData['discount'];
+        $form->remark = $validatedData['remark'];
         $form->save();
 
-        // Redirect back or to a specific route
-        return redirect()->back()->with('message', 'Paid successfully');   
+        // Update product quantity
+        $product = Product::findOrFail($validatedData['product_id']);
+        $product->quantity -= $validatedData['quantity'];
+        $product->save();
+
+        // Redirect back or to a success page
+        return redirect()->route('forms.index')->with('message', 'Form updated successfully');
+    }
+
+    public function destroy(Form $form)
+    {
+        $form->delete();
+
+        return redirect()->route('forms.index')->with('message', 'Form deleted successfully');
     }
 }
