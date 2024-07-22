@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex gap-2 items-center text-gray-800 dark:text-gray-200">
-                        <x-application-logo class="block h-14 w-auto fill-current"/>
+                        <x-application-logo class="block h-14 w-auto fill-current rounded-full"/>
                         {{ config('app.name', 'Laravel') }}
                     </a>
                 </div>
